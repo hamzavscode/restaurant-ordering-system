@@ -18,6 +18,5 @@ import java.util.Date
  *@see JpaRepository
  */
 interface CommandeRepository : JpaRepository<Commande, Long> {
-
-
+    fun findAllByClientId(clientId: Long): List<Commande>
 }

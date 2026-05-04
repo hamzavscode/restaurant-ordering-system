@@ -141,7 +141,7 @@ class CommandeController(
      * ```
      */
     @PostMapping
-    fun createCommande(@RequestBody request: CommandeRequest): Commande =
+    fun createCommande(@RequestBody request: CommandeRequest): com.restaurant.RestaurantApi.model.DTO.CommandeResponseDTO =
         commandeService.createCommande(request)
     /**
      * Met à jour une commande existante (client et/ou éléments).

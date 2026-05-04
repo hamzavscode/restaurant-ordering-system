@@ -16,7 +16,6 @@ import java.util.*
  * @see com.restaurant.RestaurantApi.model.ElementMenu
  */
 data class CommandeRequest(
-    val date: Date,
     val clientId: Long,
     val elementIds: List<Long>
 )

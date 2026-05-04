@@ -17,8 +17,19 @@ import jakarta.persistence.*
  class Client(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
+
     @Column(nullable = false)
-    var nom: String
+    var nom: String,
+
+    @Column(nullable = false, unique = true)
+    var email: String = "",
+
+    @Column(nullable = false)
+    var password: String = "",
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    var role: Role = Role.CLIENT
 ) {
     /**
      * La liste des commandes passées par ce client.

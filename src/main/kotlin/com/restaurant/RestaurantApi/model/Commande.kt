@@ -24,7 +24,11 @@ class Commande(
     val id: Long? = null,
 
     @Column(nullable = false)
-    var date: Date,
+    var date: Date = Date(),
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    var status: OrderStatus = OrderStatus.PENDING,
 
     @ManyToOne
     @JoinColumn(name = "client_id")

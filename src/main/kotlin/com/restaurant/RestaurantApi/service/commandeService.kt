@@ -60,7 +60,7 @@ class CommandeService(
      * }
      * ```
      */
-    fun createCommande(request: CommandeRequest): Commande {
+    fun createCommande(request: CommandeRequest): com.restaurant.RestaurantApi.model.DTO.CommandeResponseDTO {
         val client = clientRepository.findById(request.clientId).orElseThrow { NoSuchElementException("Client avec ID ${request.clientId} n'a pas été trouvé.") }
 
         val existingElements = elementMenuRepository.findAllById(request.elementIds)
@@ -72,12 +72,31 @@ class CommandeService(
         }
 
         val newCommande = Commande(
-            date = request.date,
             client = client,
             elements = existingElements.toMutableList()
         )
 
-        return commandeRepository.save(newCommande)
+        val saved = commandeRepository.save(newCommande)
+        
+        return com.restaurant.RestaurantApi.model.DTO.CommandeResponseDTO(
+            id = saved.id!!,
+            date = saved.date,
+            status = saved.status,
+            client = com.restaurant.RestaurantApi.model.DTO.ClientResponseDTO(
+                id = saved.client.id!!,
+                nom = saved.client.nom,
+                email = saved.client.email,
+                role = saved.client.role
+            ),
+            elements = saved.elements.map { e -> 
+                com.restaurant.RestaurantApi.model.DTO.ElementMenuDTO(
+                    id = e.id!!,
+                    nom = e.nom,
+                    prix = e.prix,
+                    description = e.description
+                )
+            }
+        )
     }
     /**
      * Met à jour une commande existante.

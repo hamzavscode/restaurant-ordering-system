@@ -22,5 +22,13 @@ data class ClientRequestDTO(
         message = "Le nom doit commencer par une majuscule et contenir uniquement des lettres et des espaces"
     )
     @field:NotNull(message = "Le nom not null")
-    val nom: String
+    val nom: String,
+
+    @field:jakarta.validation.constraints.Email(message = "Email invalide")
+    @field:NotNull(message = "L'email est requis")
+    val email: String,
+
+    @field:jakarta.validation.constraints.Size(min = 6, message = "Le mot de passe doit contenir au moins 6 caractères")
+    @field:NotNull(message = "Le mot de passe est requis")
+    val password: String
 )

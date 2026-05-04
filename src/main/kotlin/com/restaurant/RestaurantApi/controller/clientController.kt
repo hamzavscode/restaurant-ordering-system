@@ -126,8 +126,8 @@ class ClientController(private val clientService: ClientService) {
      * 2.  **Réponse attendue (400 Bad Request) :**
      * (Message d'erreur de validation)
      */
-    @PostMapping
-    fun createClient(@Valid @RequestBody request: ClientRequestDTO): Client = clientService.saveClient(request)
+    @PostMapping("/register")
+    fun createClient(@Valid @RequestBody request: ClientRequestDTO): com.restaurant.RestaurantApi.model.DTO.ClientResponseDTO = clientService.saveClient(request)
     /**
      * Met à jour un client existant.
      *

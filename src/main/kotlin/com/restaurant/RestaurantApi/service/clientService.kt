@@ -55,9 +55,22 @@ class ClientService(private val clientRepository: ClientRepository) {
      * val ClientCree = ClientService.saveClient(nouvelC)
      * ```
      */
-    fun saveClient(request: ClientRequestDTO): Client {
-        val client = Client(nom = request.nom)
-        return clientRepository.save(client)
+    fun saveClient(request: ClientRequestDTO): com.restaurant.RestaurantApi.model.DTO.ClientResponseDTO {
+        if (clientRepository.findByEmail(request.email) != null) {
+            throw RuntimeException("Email déjà utilisé")
+        }
+        val client = Client(
+            nom = request.nom,
+            email = request.email,
+            password = request.password
+        )
+        val saved = clientRepository.save(client)
+        return com.restaurant.RestaurantApi.model.DTO.ClientResponseDTO(
+            id = saved.id!!,
+            nom = saved.nom,
+            email = saved.email,
+            role = saved.role
+        )
     }
 
     /**
