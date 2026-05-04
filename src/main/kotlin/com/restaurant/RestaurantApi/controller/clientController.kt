@@ -128,6 +128,11 @@ class ClientController(private val clientService: ClientService) {
      */
     @PostMapping("/register")
     fun createClient(@Valid @RequestBody request: ClientRequestDTO): com.restaurant.RestaurantApi.model.DTO.ClientResponseDTO = clientService.saveClient(request)
+
+    @PostMapping("/login")
+    fun loginClient(@RequestBody request: com.restaurant.RestaurantApi.model.DTO.LoginRequestDTO): com.restaurant.RestaurantApi.model.DTO.ClientResponseDTO =
+        clientService.loginClient(request.email, request.password)
+
     /**
      * Met à jour un client existant.
      *

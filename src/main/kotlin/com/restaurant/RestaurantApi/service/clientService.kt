@@ -73,6 +73,22 @@ class ClientService(private val clientRepository: ClientRepository) {
         )
     }
 
+    fun loginClient(email: String, password: String): com.restaurant.RestaurantApi.model.DTO.ClientResponseDTO {
+        val client = clientRepository.findByEmail(email)
+            ?: throw RuntimeException("Email ou mot de passe incorrect")
+
+        if (client.password != password) {
+            throw RuntimeException("Email ou mot de passe incorrect")
+        }
+
+        return com.restaurant.RestaurantApi.model.DTO.ClientResponseDTO(
+            id = client.id!!,
+            nom = client.nom,
+            email = client.email,
+            role = client.role
+        )
+    }
+
     /**
      * Met à jour les informations d'un Client existant.
      *
