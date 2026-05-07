@@ -65,5 +65,6 @@ data class BoissonRequest(
     @field:Positive(message = "Le volume doit être positif")
     val volumeLitre: Double,
 
-    val contientAlcool: Boolean
+    val contientAlcool: Boolean,
+    val imageUrl: String? = null
 )

@@ -38,7 +38,7 @@ class PlatPrincipalService(private val platPrincipalRepostory: PlatPrincipalRepo
      * @return Le plat sauvegardé avec son ID généré.
      */
     fun savePlatPrincipal(platPrincipal: platPrincipalRequist): PlatPrincipal{
-        val plat= PlatPrincipal(nom = platPrincipal.nom, prix = platPrincipal.prix, description = platPrincipal.description,tempsPreparationMinutes=platPrincipal.tempsPreparationMinutes)
+        val plat= PlatPrincipal(nom = platPrincipal.nom, prix = platPrincipal.prix, description = platPrincipal.description, imageUrl = platPrincipal.imageUrl, tempsPreparationMinutes=platPrincipal.tempsPreparationMinutes)
         return platPrincipalRepostory.save(plat)
     }
     /**
@@ -54,6 +54,7 @@ class PlatPrincipalService(private val platPrincipalRepostory: PlatPrincipalRepo
         existing.prix = platPrincipal.prix
         existing.description = platPrincipal.description
         existing.tempsPreparationMinutes=platPrincipal.tempsPreparationMinutes
+        existing.imageUrl = platPrincipal.imageUrl
         return platPrincipalRepostory.save(existing)
     }
     /**

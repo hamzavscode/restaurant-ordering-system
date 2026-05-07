@@ -37,7 +37,7 @@ class DessertService(private val dessertRepository: DessertRepository) {
      * @return Le dessert sauvegardé avec son ID généré.
      */
     fun saveDessert(dessert: DessertRequist):Dessert{
-        val dessert= Dessert(nom = dessert.nom, prix = dessert.prix, description = dessert.description, calories = dessert.calories, estServiChaud = dessert.estServiChaud,)
+        val dessert= Dessert(nom = dessert.nom, prix = dessert.prix, description = dessert.description, imageUrl = dessert.imageUrl, calories = dessert.calories, estServiChaud = dessert.estServiChaud)
         return dessertRepository.save(dessert)
     }
     /**
@@ -65,7 +65,7 @@ class DessertService(private val dessertRepository: DessertRepository) {
         existing.description = newdessert.description
         existing.calories=newdessert.calories
         existing.estServiChaud=newdessert.estServiChaud
-
+        existing.imageUrl = newdessert.imageUrl
         return  dessertRepository.save(existing)
 
     }

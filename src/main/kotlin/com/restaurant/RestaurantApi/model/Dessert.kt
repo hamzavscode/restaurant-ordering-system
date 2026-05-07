@@ -22,8 +22,8 @@ class Dessert(
     nom: String,
     prix: Double,
     description: String,
+    imageUrl: String? = null,
     var calories: Int=0,
-    @Column(nullable = false)
     var estServiChaud: Boolean=false
 
-) : ElementMenu(null,nom, prix, description)
+) : ElementMenu(null, nom, prix, description, imageUrl)

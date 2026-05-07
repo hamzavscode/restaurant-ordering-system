@@ -59,5 +59,6 @@ data class DessertRequist(
 
     var calories: Int=0,
 
-    var estServiChaud: Boolean=false
+    var estServiChaud: Boolean=false,
+    var imageUrl: String? = null
 )

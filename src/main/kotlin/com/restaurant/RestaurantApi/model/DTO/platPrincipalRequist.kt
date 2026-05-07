@@ -41,5 +41,6 @@ class platPrincipalRequist (
     @field:Min(value = 5, message = "Le temps de préparation minimum doit être de 5 minutes.")
     @field:Max(value = 120, message = "Le temps de préparation ne peut pas dépasser 120 minutes (2 heures).")
     val prix: Double,
-    var tempsPreparationMinutes: Int = 0
+    var tempsPreparationMinutes: Int = 0,
+    var imageUrl: String? = null
 )

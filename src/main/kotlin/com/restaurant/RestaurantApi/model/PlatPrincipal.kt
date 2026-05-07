@@ -32,8 +32,8 @@ import jakarta.persistence.*
      nom: String,
      prix: Double,
      description: String,
+     imageUrl: String? = null,
 
-    @Column(nullable = false)
      var tempsPreparationMinutes: Int = 0
 
-) : ElementMenu(null,nom, prix, description)
+) : ElementMenu(null, nom, prix, description, imageUrl)

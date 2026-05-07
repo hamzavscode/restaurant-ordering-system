@@ -4,8 +4,8 @@ import 'package:http/http.dart' as http;
 /// Service class that handles all HTTP communication with the Spring Boot backend.
 /// Centralizes API calls so screens only need to call simple methods.
 class ApiService {
-  // For Android emulator use 10.0.2.2, for real device use your PC's IP
-  static const String baseUrl = 'http://10.0.2.2:8080/api';
+  // For Web (Edge/Chrome) use localhost, for Android emulator use 10.0.2.2
+  static const String baseUrl = 'http://localhost:8080/api';
 
   /// Register a new client.
   /// Sends [nom], [email], and [password] to the backend.
@@ -58,6 +58,24 @@ class ApiService {
     } else {
       final error = jsonDecode(response.body);
       throw Exception(error['message'] ?? 'Email ou mot de passe incorrect');
+    }
+  }
+
+  /// Fetch all menu items from the backend.
+  /// Calls GET /api/elements and returns a list of menu items.
+  static Future<List<Map<String, dynamic>>> getMenu() async {
+    final url = Uri.parse('$baseUrl/elements');
+
+    final response = await http.get(
+      url,
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.cast<Map<String, dynamic>>();
+    } else {
+      throw Exception('Erreur lors du chargement du menu');
     }
   }
 }

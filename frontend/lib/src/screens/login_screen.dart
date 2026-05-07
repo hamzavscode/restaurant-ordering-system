@@ -67,8 +67,12 @@ class _LoginScreenState extends State<LoginScreen>
         ),
       );
 
-      // TODO: Navigate to Home/Menu screen when ready
-      // Navigator.pushReplacementNamed(context, '/home');
+      // Navigate to Menu screen with user name
+      Navigator.pushReplacementNamed(
+        context,
+        '/menu',
+        arguments: response['nom'] ?? 'User',
+      );
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

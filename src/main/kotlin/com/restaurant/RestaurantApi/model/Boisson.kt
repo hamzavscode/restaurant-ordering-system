@@ -51,11 +51,10 @@ class Boisson(
     nom: String,
     prix: Double,
     description: String,
+    imageUrl: String? = null,
 
-    @Column(nullable = false)
     var volumeLitre: Double=0.0,
 
-    @Column(nullable = false)
     var contientAlcool: Boolean = false
 
-) : ElementMenu(null,nom, prix, description)
+) : ElementMenu(null, nom, prix, description, imageUrl)

@@ -39,5 +39,8 @@ open class ElementMenu(
     var prix: Double,
     @Column(nullable = false)
     var description: String,
+
+    @Column(nullable = true)
+    var imageUrl: String? = null,
 )
 

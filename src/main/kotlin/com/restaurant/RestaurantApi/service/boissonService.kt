@@ -24,7 +24,7 @@ class BoissonService(private val boissonRepository: BoissonRepository) {
      * @return La [Boisson] sauvegardée avec son identifiant généré.
      */
     fun saveBoisson(request: BoissonRequest): Boisson{
-        val boisson = Boisson(nom = request.nom, prix = request.prix, description = request.description, volumeLitre = request.volumeLitre, contientAlcool = request.contientAlcool)
+        val boisson = Boisson(nom = request.nom, prix = request.prix, description = request.description, imageUrl = request.imageUrl, volumeLitre = request.volumeLitre, contientAlcool = request.contientAlcool)
         return boissonRepository.save(boisson)
     }
 
@@ -58,7 +58,7 @@ class BoissonService(private val boissonRepository: BoissonRepository) {
         existing.description = request.description
         existing.volumeLitre=request.volumeLitre
         existing.contientAlcool=request.contientAlcool
-
+        existing.imageUrl = request.imageUrl
         return boissonRepository.save(existing)
 
     }
