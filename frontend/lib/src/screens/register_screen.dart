@@ -213,6 +213,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                   const SizedBox(height: 32),
 
                   // ─── Create Account Button ───
+                  // create client user
                   SizedBox(
                     width: double.infinity,
                     height: 54,
