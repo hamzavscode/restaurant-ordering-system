@@ -98,181 +98,242 @@ class _RegisterScreenState extends State<RegisterScreen>
             child: Form(
               key: _formKey,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 60),
+                  const SizedBox(height: 40),
 
-                  // ─── Logo Icon ───
+                  // ─── White Card Container ───
                   Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: AppTheme.primaryFaded.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: const Icon(
-                      Icons.restaurant,
-                      color: AppTheme.primary,
-                      size: 26,
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // ─── Heading ───
-                  const Text(
-                    'Create Account',
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.w800,
-                      color: AppTheme.textDark,
-                      letterSpacing: -0.5,
-                    ),
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  // ─── Subtitle ───
-                  const Text(
-                    'Join us today to start ordering your favorite\ndishes easily.',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppTheme.textMuted,
-                      height: 1.5,
-                    ),
-                  ),
-
-                  const SizedBox(height: 36),
-
-                  // ─── Full Name Field ───
-                  _buildTextField(
-                    controller: _nomController,
-                    hint: 'Full Name',
-                    icon: Icons.person_outline,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Le nom est requis';
-                      }
-                      if (value.trim().length < 3) {
-                        return 'Le nom doit contenir au moins 3 caractères';
-                      }
-                      return null;
-                    },
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // ─── Email Field ───
-                  _buildTextField(
-                    controller: _emailController,
-                    hint: 'Email',
-                    icon: Icons.mail_outline,
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "L'email est requis";
-                      }
-                      if (!value.contains('@') || !value.contains('.')) {
-                        return 'Email invalide';
-                      }
-                      return null;
-                    },
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // ─── Password Field ───
-                  _buildTextField(
-                    controller: _passwordController,
-                    hint: 'Password',
-                    icon: Icons.lock_outline,
-                    obscure: _obscurePassword,
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscurePassword
-                            ? Icons.visibility_off_outlined
-                            : Icons.visibility_outlined,
-                        color: AppTheme.textMuted,
-                        size: 20,
-                      ),
-                      onPressed: () {
-                        setState(() => _obscurePassword = !_obscurePassword);
-                      },
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Le mot de passe est requis';
-                      }
-                      if (value.length < 6) {
-                        return 'Minimum 6 caractères';
-                      }
-                      return null;
-                    },
-                  ),
-
-                  const SizedBox(height: 32),
-
-                  // ─── Create Account Button ───
-                  // create client user
-                  SizedBox(
                     width: double.infinity,
-                    height: 54,
-                    child: ElevatedButton(
-                      onPressed: _isLoading ? null : _handleRegister,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.primary,
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 32),
+                    decoration: BoxDecoration(
+                      color: AppTheme.surface,
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppTheme.primary.withOpacity(0.05),
+                          blurRadius: 20,
+                          spreadRadius: 2,
+                          offset: const Offset(0, 6),
                         ),
-                      ),
-                      child: _isLoading
-                          ? const SizedBox(
-                              width: 22,
-                              height: 22,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2.5,
-                              ),
-                            )
-                          : const Text(
-                              'Create Account',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 0.3,
-                              ),
-                            ),
+                      ],
                     ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // ─── Login Link ───
-                  Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    child: Column(
                       children: [
-                        const Text(
-                          'Already have an account?  ',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: AppTheme.textMuted,
+                        // ─── Logo Circle ───
+                        Container(
+                          width: 70,
+                          height: 70,
+                          decoration: const BoxDecoration(
+                            color: AppTheme.primary,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.person_add,
+                            color: Colors.white,
+                            size: 35,
                           ),
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pushReplacementNamed(context, '/login');
-                          },
-                          child: const Text(
-                            'Login',
+
+                        const SizedBox(height: 20),
+
+                        // ─── Heading ───
+                        const Text(
+                          'Create Account',
+                          style: TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.w800,
+                            color: AppTheme.textDark,
+                            letterSpacing: -0.3,
+                          ),
+                        ),
+
+                        const SizedBox(height: 8),
+
+                        // ─── Subtitle ───
+                        const Text(
+                          'Join us today to start ordering\nyour favorite dishes easily.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: AppTheme.textMuted,
+                            height: 1.5,
+                          ),
+                        ),
+
+                        const SizedBox(height: 28),
+
+                        // ─── Full Name Label ───
+                        const Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Full Name',
                             style: TextStyle(
                               fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                              color: AppTheme.primary,
+                              fontWeight: FontWeight.w600,
+                              color: AppTheme.textDark,
                             ),
                           ),
+                        ),
+                        const SizedBox(height: 8),
+
+                        // ─── Full Name Field ───
+                        _buildTextField(
+                          controller: _nomController,
+                          hint: 'Enter your full name',
+                          icon: Icons.person_outline,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Le nom est requis';
+                            }
+                            if (value.trim().length < 3) {
+                              return 'Le nom doit contenir au moins 3 caractères';
+                            }
+                            return null;
+                          },
+                        ),
+
+                        const SizedBox(height: 20),
+
+                        // ─── Email Label ───
+                        const Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Email Address',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: AppTheme.textDark,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+
+                        // ─── Email Field ───
+                        _buildTextField(
+                          controller: _emailController,
+                          hint: 'Enter your email address',
+                          icon: Icons.mail_outline,
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return "L'email est requis";
+                            }
+                            if (!value.contains('@') || !value.contains('.')) {
+                              return 'Email invalide';
+                            }
+                            return null;
+                          },
+                        ),
+
+                        const SizedBox(height: 20),
+
+                        // ─── Password Label ───
+                        const Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Password',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: AppTheme.textDark,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+
+                        // ─── Password Field ───
+                        _buildTextField(
+                          controller: _passwordController,
+                          hint: 'Enter your password',
+                          icon: Icons.lock_outline,
+                          obscure: _obscurePassword,
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscurePassword
+                                  ? Icons.visibility_off_outlined
+                                  : Icons.visibility_outlined,
+                              color: AppTheme.textMuted,
+                              size: 20,
+                            ),
+                            onPressed: () {
+                              setState(() => _obscurePassword = !_obscurePassword);
+                            },
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Le mot de passe est requis';
+                            }
+                            if (value.length < 6) {
+                              return 'Minimum 6 caractères';
+                            }
+                            return null;
+                          },
+                        ),
+
+                        const SizedBox(height: 28),
+
+                        // ─── Create Account Button ───
+                        SizedBox(
+                          width: double.infinity,
+                          height: 54,
+                          child: ElevatedButton(
+                            onPressed: _isLoading ? null : _handleRegister,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppTheme.primary,
+                              foregroundColor: Colors.white,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
+                            child: _isLoading
+                                ? const SizedBox(
+                                    width: 22,
+                                    height: 22,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2.5,
+                                    ),
+                                  )
+                                : const Text(
+                                    'Create Account',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: 0.3,
+                                    ),
+                                  ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 20),
+
+                        // ─── Login Link ───
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'Already have an account? ',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: AppTheme.textMuted,
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushReplacementNamed(context, '/login');
+                              },
+                              child: const Text(
+                                'Login',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppTheme.primary,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

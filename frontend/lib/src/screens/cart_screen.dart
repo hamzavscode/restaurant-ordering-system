@@ -225,7 +225,7 @@ class CartScreen extends StatelessWidget {
             );
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFBC2609),
+            backgroundColor: AppTheme.primary,
             foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14),
@@ -254,31 +254,69 @@ class CartScreen extends StatelessWidget {
   /// Displayed when cart is empty
   Widget _buildEmptyCart() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.shopping_cart_outlined,
-            size: 80,
-            color: AppTheme.textMuted.withOpacity(0.5),
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            'Your cart is empty',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: AppTheme.textDark,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 40),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Large illustrative icon container
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                color: AppTheme.primaryFaded.withOpacity(0.15),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.shopping_cart_outlined,
+                size: 55,
+                color: AppTheme.primary.withOpacity(0.6),
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Add items from the menu to start ordering.',
-            style: TextStyle(
-              color: AppTheme.textMuted,
+            const SizedBox(height: 28),
+            const Text(
+              'Your cart is empty',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w800,
+                color: AppTheme.textDark,
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 10),
+            const Text(
+              'Looks like you haven\'t added\nanything to your cart yet.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                color: AppTheme.textMuted,
+                height: 1.6,
+              ),
+            ),
+            const SizedBox(height: 32),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              decoration: BoxDecoration(
+                color: AppTheme.primary.withOpacity(0.08),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.restaurant_menu, size: 16, color: AppTheme.primary),
+                  const SizedBox(width: 8),
+                  const Text(
+                    'Browse the Menu tab to start',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: AppTheme.primary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

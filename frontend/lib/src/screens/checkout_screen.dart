@@ -62,32 +62,45 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       context: context,
       barrierDismissible: false,
       builder: (ctx) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // Success icon with gradient background
               Container(
-                padding: const EdgeInsets.all(16),
+                width: 80,
+                height: 80,
                 decoration: BoxDecoration(
-                  color: Colors.green.shade50,
+                  gradient: LinearGradient(
+                    colors: [Colors.green.shade400, Colors.green.shade600],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                   shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.green.withOpacity(0.3),
+                      blurRadius: 16,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
                 ),
-                child: Icon(Icons.check_circle, size: 48, color: Colors.green.shade600),
+                child: const Icon(Icons.check_rounded, size: 45, color: Colors.white),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 24),
               const Text(
-                'Order Confirmed!',
+                'Order Confirmed! 🎉',
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 22,
                   fontWeight: FontWeight.w800,
                   color: AppTheme.textDark,
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
               const Text(
-                'Your order has been sent to the kitchen. You can track its status in the Orders tab.',
+                'Your order has been sent to the kitchen.\nYou can track its status in the Orders tab.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
@@ -95,7 +108,32 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   height: 1.5,
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 8),
+              // Estimated time
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryFaded.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.schedule, size: 16, color: AppTheme.primary),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Estimated prep: 15-25 min',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.primary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
               SizedBox(
                 width: double.infinity,
                 height: 50,
@@ -109,10 +147,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.primary,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(14),
                     ),
+                    elevation: 0,
                   ),
-                  child: const Text('Return to Menu'),
+                  child: const Text(
+                    'Return to Menu',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                  ),
                 ),
               ),
             ],
@@ -192,20 +234,55 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       ),
                       child: Column(
                         children: [
+                          // Table indicator
+                          Row(
+                            children: [
+                              Icon(Icons.table_restaurant, size: 18, color: AppTheme.primary),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Table $_selectedTable',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppTheme.textDark,
+                                ),
+                              ),
+                              const Spacer(),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.primary.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  '${cart.totalItemCount} Items',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppTheme.primary,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Divider(color: AppTheme.textMuted.withOpacity(0.1), height: 1),
+                          const SizedBox(height: 12),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                '${cart.totalItemCount} Items',
-                                style: const TextStyle(
+                              const Text(
+                                'Total',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
                                   color: AppTheme.textMuted,
-                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                               Text(
                                 '${cart.totalPrice.toStringAsFixed(2)} DH',
                                 style: const TextStyle(
-                                  fontSize: 18,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.w800,
                                   color: AppTheme.textDark,
                                 ),
@@ -353,7 +430,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         child: ElevatedButton(
           onPressed: _isProcessing ? null : _placeOrder,
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFBC2609),
+            backgroundColor: AppTheme.primary,
             foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14),

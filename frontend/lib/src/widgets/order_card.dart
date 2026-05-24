@@ -10,12 +10,14 @@ class OrderCard extends StatelessWidget {
   final Order order;
   final VoidCallback? onTap;
   final VoidCallback? onReorder;
+  final VoidCallback? onCancel;
 
   const OrderCard({
     super.key,
     required this.order,
     this.onTap,
     this.onReorder,
+    this.onCancel,
   });
 
   @override
@@ -141,7 +143,27 @@ class OrderCard extends StatelessWidget {
                           ],
                         ),
 
-                        // ─── Reorder Button (only for CONFIRMED orders) ───
+                        // ─── Actions (Cancel / Reorder) ───
+                        if (order.status == 'PENDING' && onCancel != null) ...[
+                          const SizedBox(height: 16),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: OutlinedButton.icon(
+                              onPressed: onCancel,
+                              icon: const Icon(Icons.close, size: 16),
+                              label: const Text('Cancel Order'),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: AppTheme.error,
+                                side: const BorderSide(color: AppTheme.error),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                              ),
+                            ),
+                          ),
+                        ],
                         if (order.status == 'CONFIRMED' && onReorder != null) ...[
                           const SizedBox(height: 16),
                           Align(

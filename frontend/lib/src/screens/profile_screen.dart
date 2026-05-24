@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
+import '../providers/orders_provider.dart';
 import '../theme/app_theme.dart';
 import 'edit_profile_screen.dart';
 
 /// Profile Screen.
-/// Displays user info, settings, and logout option.
+/// Displays user info, stats, settings, and logout option.
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
@@ -43,6 +44,9 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
+    final ordersProvider = context.watch<OrdersProvider>();
+    final totalOrders = ordersProvider.orders.length;
+    final pendingOrders = ordersProvider.orders.where((o) => o.status == 'PENDING').length;
 
     return Scaffold(
       backgroundColor: AppTheme.background,
@@ -58,10 +62,15 @@ class ProfileScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   children: [
+                    // ─── Stats Row ───
+                    _buildStatsRow(totalOrders, pendingOrders),
+                    const SizedBox(height: 28),
+
                     _buildSectionHeader('Account Settings'),
                     _buildMenuTile(
                       icon: Icons.person_outline,
                       title: 'Edit Profile',
+                      subtitle: 'Update your name and email',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -73,6 +82,7 @@ class ProfileScreen extends StatelessWidget {
                     _buildMenuTile(
                       icon: Icons.notifications_none,
                       title: 'Notifications',
+                      subtitle: 'Manage push notifications',
                       trailing: Switch(
                         value: true,
                         onChanged: (val) {},
@@ -80,16 +90,30 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       onTap: () {},
                     ),
+                    _buildMenuTile(
+                      icon: Icons.language,
+                      title: 'Language',
+                      subtitle: 'English',
+                      onTap: () {},
+                    ),
                     const SizedBox(height: 24),
                     _buildSectionHeader('More'),
                     _buildMenuTile(
                       icon: Icons.restaurant_menu,
                       title: 'About the Restaurant',
+                      subtitle: 'Our story and menu philosophy',
                       onTap: () {},
                     ),
                     _buildMenuTile(
                       icon: Icons.help_outline,
                       title: 'Help & Support',
+                      subtitle: 'FAQs, contact us',
+                      onTap: () {},
+                    ),
+                    _buildMenuTile(
+                      icon: Icons.privacy_tip_outlined,
+                      title: 'Privacy Policy',
+                      subtitle: 'How we handle your data',
                       onTap: () {},
                     ),
                     const SizedBox(height: 32),
@@ -117,6 +141,18 @@ class ProfileScreen extends StatelessWidget {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 24),
+
+                    // ─── App Version ───
+                    Text(
+                      'Modern Hospitality v1.0.0',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppTheme.textMuted.withOpacity(0.6),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
                   ],
                 ),
               ),
@@ -132,42 +168,108 @@ class ProfileScreen extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 32),
       decoration: BoxDecoration(
-        color: AppTheme.surface,
-        border: Border(bottom: BorderSide(color: AppTheme.textMuted.withOpacity(0.1))),
+        gradient: LinearGradient(
+          colors: [AppTheme.primary, AppTheme.primaryLight],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
       ),
       child: Column(
         children: [
           // Avatar
           Container(
-            width: 100,
-            height: 100,
+            width: 90,
+            height: 90,
             decoration: BoxDecoration(
-              color: AppTheme.primaryFaded.withOpacity(0.3),
+              color: Colors.white.withOpacity(0.2),
               shape: BoxShape.circle,
-              border: Border.all(color: AppTheme.primary, width: 3),
+              border: Border.all(color: Colors.white.withOpacity(0.5), width: 3),
             ),
-            child: const Icon(Icons.person, size: 50, color: AppTheme.primary),
+            child: Center(
+              child: Text(
+                auth.userName.isNotEmpty ? auth.userName[0].toUpperCase() : 'U',
+                style: const TextStyle(
+                  fontSize: 36,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white,
+                ),
+              ),
+            ),
           ),
           const SizedBox(height: 16),
-          // User Info
+          // User Name
           Text(
             auth.userName,
             style: const TextStyle(
-              fontSize: 24,
+              fontSize: 22,
               fontWeight: FontWeight.w800,
-              color: AppTheme.textDark,
+              color: Colors.white,
             ),
           ),
           const SizedBox(height: 4),
+          // User Email
           Text(
             auth.userEmail,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
-              color: AppTheme.textMuted,
+              color: Colors.white.withOpacity(0.8),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  /// Stats row showing total orders and pending count
+  Widget _buildStatsRow(int totalOrders, int pendingOrders) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+      decoration: BoxDecoration(
+        color: AppTheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(child: _statItem(Icons.receipt_long, '$totalOrders', 'Total Orders')),
+          Container(width: 1, height: 40, color: AppTheme.textMuted.withOpacity(0.1)),
+          Expanded(child: _statItem(Icons.schedule, '$pendingOrders', 'Pending')),
+          Container(width: 1, height: 40, color: AppTheme.textMuted.withOpacity(0.1)),
+          Expanded(child: _statItem(Icons.star_outline, '4.8', 'Rating')),
+        ],
+      ),
+    );
+  }
+
+  Widget _statItem(IconData icon, String value, String label) {
+    return Column(
+      children: [
+        Icon(icon, color: AppTheme.primary, size: 22),
+        const SizedBox(height: 6),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w800,
+            color: AppTheme.textDark,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 11,
+            color: AppTheme.textMuted,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
     );
   }
 
@@ -193,6 +295,7 @@ class ProfileScreen extends StatelessWidget {
     required IconData icon,
     required String title,
     required VoidCallback onTap,
+    String? subtitle,
     Widget? trailing,
   }) {
     return Container(
@@ -200,7 +303,7 @@ class ProfileScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppTheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.textMuted.withOpacity(0.1)),
+        border: Border.all(color: AppTheme.textMuted.withOpacity(0.08)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.02),
@@ -223,11 +326,20 @@ class ProfileScreen extends StatelessWidget {
         title: Text(
           title,
           style: const TextStyle(
-            fontSize: 16,
+            fontSize: 15,
             fontWeight: FontWeight.w600,
             color: AppTheme.textDark,
           ),
         ),
+        subtitle: subtitle != null
+            ? Text(
+                subtitle,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: AppTheme.textMuted,
+                ),
+              )
+            : null,
         trailing: trailing ?? const Icon(Icons.chevron_right, color: AppTheme.textMuted),
       ),
     );

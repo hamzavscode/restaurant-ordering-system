@@ -47,10 +47,10 @@ class _SplashScreenState extends State<SplashScreen>
     // Start the animation
     _controller.forward();
 
-    // Navigate to Register after 3 seconds
+    // Navigate to Login after 3 seconds
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {
-        Navigator.pushReplacementNamed(context, '/register');
+        Navigator.pushReplacementNamed(context, '/login');
       }
     });
   }

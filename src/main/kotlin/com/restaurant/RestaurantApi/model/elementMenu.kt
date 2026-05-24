@@ -42,5 +42,8 @@ open class ElementMenu(
 
     @Column(nullable = true)
     var imageUrl: String? = null,
+
+    @Column(name = "type_element", insertable = false, updatable = false)
+    val typeElement: String? = null
 )
 

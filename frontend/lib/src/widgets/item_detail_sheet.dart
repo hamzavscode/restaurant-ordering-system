@@ -77,7 +77,7 @@ void showItemDetail(
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
-                            _getCategoryLabel(item['type_element']),
+                            _getCategoryLabel(item['typeElement'] ?? item['type_element']),
                             style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
@@ -272,7 +272,7 @@ String _getCategoryLabel(String? type) {
 /// Info chips showing extra details (prep time, calories, volume, etc.)
 Widget _buildInfoChips(Map<String, dynamic> item) {
   final List<Widget> chips = [];
-  final type = item['type_element'];
+  final type = item['typeElement'] ?? item['type_element'];
 
   if (type == 'PLAT' && item['tempsPreparationMinutes'] != null && item['tempsPreparationMinutes'] > 0) {
     chips.add(_infoChip(Icons.timer_outlined, '${item['tempsPreparationMinutes']} min'));

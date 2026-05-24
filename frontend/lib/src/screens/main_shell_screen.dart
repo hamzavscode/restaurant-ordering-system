@@ -33,7 +33,10 @@ class _MainShellScreenState extends State<MainShellScreen> {
     final userName = authProvider.userName;
 
     final screens = <Widget>[
-      MenuScreen(userName: userName),        // 0: Menu
+      MenuScreen(
+        userName: userName,
+        onProfileTap: () => _onTabTapped(3),
+      ),                                     // 0: Menu
       const OrdersScreen(),                  // 1: Orders
       const CartScreen(),                    // 2: Cart
       const ProfileScreen(),                 // 3: Profile

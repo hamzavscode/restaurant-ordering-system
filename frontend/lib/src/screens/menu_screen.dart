@@ -11,8 +11,9 @@ import '../widgets/menu_shimmer.dart';
 /// Fetches data from GET /api/elements and displays items in a grid.
 class MenuScreen extends StatefulWidget {
   final String userName;
+  final VoidCallback? onProfileTap;
 
-  const MenuScreen({super.key, required this.userName});
+  const MenuScreen({super.key, required this.userName, this.onProfileTap});
 
   @override
   State<MenuScreen> createState() => _MenuScreenState();
@@ -91,7 +92,7 @@ class _MenuScreenState extends State<MenuScreen> {
     // Filter by category
     if (_selectedCategory != 'All') {
       result = result.where((item) {
-        final type = item['type_element'] ?? '';
+        final type = item['typeElement'] ?? item['type_element'] ?? '';
         return _typeToCategory[type] == _selectedCategory;
       }).toList();
     }
@@ -135,7 +136,7 @@ class _MenuScreenState extends State<MenuScreen> {
     if (item['imageUrl'] != null && item['imageUrl'].toString().isNotEmpty) {
       return item['imageUrl'];
     }
-    final type = item['type_element'] ?? 'PLAT';
+    final type = item['typeElement'] ?? item['type_element'] ?? 'PLAT';
     return _categoryImages[type] ?? _categoryImages['PLAT']!;
   }
 
@@ -162,6 +163,8 @@ class _MenuScreenState extends State<MenuScreen> {
                         child: Column(
                           children: [
                             const SizedBox(height: 8),
+                            _buildPromoBanner(),
+                            const SizedBox(height: 20),
                             _buildSearchBar(),
                             const SizedBox(height: 16),
                             _buildCategoryTabs(),
@@ -201,14 +204,17 @@ class _MenuScreenState extends State<MenuScreen> {
               ),
               const Spacer(),
               // ─── Profile Avatar ───
-              Container(
-                width: 38,
-                height: 38,
-                decoration: BoxDecoration(
-                  color: AppTheme.primaryFaded.withOpacity(0.3),
-                  shape: BoxShape.circle,
+              GestureDetector(
+                onTap: widget.onProfileTap,
+                child: Container(
+                  width: 38,
+                  height: 38,
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryFaded.withOpacity(0.3),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.person, color: AppTheme.primary, size: 20),
                 ),
-                child: const Icon(Icons.person, color: AppTheme.primary, size: 20),
               ),
             ],
           ),
@@ -227,6 +233,91 @@ class _MenuScreenState extends State<MenuScreen> {
           const Text(
             'What would you like to order today?',
             style: TextStyle(fontSize: 14, color: AppTheme.textMuted),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Promotional banner to make the app feel professional
+  Widget _buildPromoBanner() {
+    return Container(
+      width: double.infinity,
+      height: 140,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        gradient: LinearGradient(
+          colors: [AppTheme.primary, AppTheme.primaryLight],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.primary.withOpacity(0.3),
+            blurRadius: 15,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          // Background graphic elements
+          Positioned(
+            right: -20,
+            top: -20,
+            child: Icon(
+              Icons.restaurant_menu,
+              size: 140,
+              color: Colors.white.withOpacity(0.1),
+            ),
+          ),
+          Positioned(
+            left: -20,
+            bottom: -20,
+            child: Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withOpacity(0.05),
+              ),
+            ),
+          ),
+          // Content
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Text(
+                    'SPECIAL OFFER',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Discount 20%\nOn All Desserts',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    height: 1.2,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -339,98 +430,135 @@ class _MenuScreenState extends State<MenuScreen> {
     );
   }
 
-  /// Single menu item card.
   Widget _buildMenuCard(Map<String, dynamic> item) {
     return GestureDetector(
       onTap: () => _showItemDetail(item),
       child: Container(
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // ─── Item Image ───
-          ClipRRect(
-            borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(16)),
-            child: Image.network(
-              _getImageForItem(item),
-              height: 120,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Container(
-                height: 120,
-                color: AppTheme.primaryFaded.withOpacity(0.2),
-                child: const Icon(Icons.restaurant,
-                    size: 40, color: AppTheme.primary),
-              ),
+        decoration: BoxDecoration(
+          color: AppTheme.surface,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppTheme.textMuted.withOpacity(0.08)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.03),
+              blurRadius: 15,
+              offset: const Offset(0, 5),
             ),
-          ),
-
-          // ─── Item Info ───
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ─── Item Image with Hover/Zoom effect simulated ───
+            Expanded(
+              flex: 5,
+              child: Stack(
                 children: [
-                  // Name
-                  Text(
-                    item['nom'] ?? 'Sans nom',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: AppTheme.textDark,
+                  ClipRRect(
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                    child: Image.network(
+                      _getImageForItem(item),
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                        color: AppTheme.primaryFaded.withOpacity(0.2),
+                        child: const Center(
+                          child: Icon(Icons.restaurant, size: 40, color: AppTheme.primary),
+                        ),
+                      ),
                     ),
                   ),
-
-                  const Spacer(),
-
-                  // ─── Price + Add Button ───
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '${(item['prix'] ?? 0).toStringAsFixed(0)} DH',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w800,
-                          color: AppTheme.primary,
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () => _addToCart(item),
-                        child: Container(
-                          width: 32,
-                          height: 32,
-                          decoration: BoxDecoration(
-                            color: AppTheme.primary,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: const Icon(Icons.add,
-                              color: Colors.white, size: 18),
-                        ),
-                      ),
-                    ],
-                  ),
+                  // Optional gradient overlay for text readability if we had text over image
                 ],
               ),
             ),
-          ),
-        ],
+
+            // ─── Item Info ───
+            Expanded(
+              flex: 4,
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Name
+                    Text(
+                      item['nom'] ?? 'Sans nom',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                        color: AppTheme.textDark,
+                        letterSpacing: -0.3,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    
+                    // Description (if available)
+                    if (item['description'] != null && item['description'].toString().isNotEmpty)
+                      Text(
+                        item['description'],
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppTheme.textMuted,
+                        ),
+                      )
+                    else
+                      const Text(
+                        'Delicious choice',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppTheme.textMuted,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+
+                    const Spacer(),
+
+                    // ─── Price + Add Button ───
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          '${(item['prix'] ?? 0).toStringAsFixed(0)} DH',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800,
+                            color: AppTheme.primary,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () => _addToCart(item),
+                          child: Container(
+                            width: 36,
+                            height: 36,
+                            decoration: BoxDecoration(
+                              color: AppTheme.primary,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppTheme.primary.withOpacity(0.3),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: const Icon(Icons.add, color: Colors.white, size: 20),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
-    ),
     );
   }
 }

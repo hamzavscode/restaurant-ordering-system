@@ -35,7 +35,7 @@ class MenuItem {
       id: json['id'] ?? 0,
       nom: json['nom'] ?? 'Sans nom',
       prix: (json['prix'] ?? 0).toDouble(),
-      typeElement: json['type_element'] ?? 'PLAT',
+      typeElement: json['typeElement'] ?? json['type_element'] ?? 'PLAT',
       description: json['description'],
       imageUrl: json['imageUrl'],
       tempsPreparationMinutes: json['tempsPreparationMinutes'],

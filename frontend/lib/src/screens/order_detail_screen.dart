@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../models/order.dart';
 import '../models/menu_item.dart';
 import '../providers/cart_provider.dart';
+import '../providers/orders_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/order_status_badge.dart';
 
@@ -410,6 +411,57 @@ class OrderDetailScreen extends StatelessWidget {
     );
   }
 
+  Future<void> _handleCancel(BuildContext context) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Cancel Order'),
+        content: const Text('Are you sure you want to cancel this order?'),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('No'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.error,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Yes, Cancel'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true && context.mounted) {
+      try {
+        await context.read<OrdersProvider>().cancelOrder(order.id);
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Order cancelled successfully'),
+              backgroundColor: AppTheme.success,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+          Navigator.pop(context); // Go back to orders screen
+        }
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error cancelling order: $e'),
+              backgroundColor: AppTheme.error,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+      }
+    }
+  }
+
   Widget _buildBottomBar(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
@@ -418,35 +470,61 @@ class OrderDetailScreen extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Reorder Button
+          // Main Action Button (Cancel or Reorder)
           Expanded(
             child: SizedBox(
               height: 56,
-              child: ElevatedButton(
-                onPressed: () => _handleReorder(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFBC2609),
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  elevation: 0,
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.refresh, size: 20),
-                    SizedBox(width: 8),
-                    Text(
-                      'Reorder',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
+              child: order.status == 'PENDING'
+                  ? ElevatedButton(
+                      onPressed: () => _handleCancel(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.error,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.close, size: 20),
+                          SizedBox(width: 8),
+                          Text(
+                            'Cancel Order',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : ElevatedButton(
+                      onPressed: () => _handleReorder(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.primary,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.refresh, size: 20),
+                          SizedBox(width: 8),
+                          Text(
+                            'Reorder',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
             ),
           ),
           const SizedBox(width: 12),

@@ -13,6 +13,10 @@ class AppTheme {
   static const Color textDark = Color(0xFF2D2D2D);        // Primary text
   static const Color textMuted = Color(0xFF9E8E87);       // Subtitle / muted text
 
+  // ─── Status Colors ───
+  static const Color success = Color(0xFF2E7D32);         // Green
+  static const Color error = Color(0xFFD32F2F);           // Red
+
   // ─── Text Styles ───
   static const TextStyle headingLarge = TextStyle(
     fontSize: 28,
