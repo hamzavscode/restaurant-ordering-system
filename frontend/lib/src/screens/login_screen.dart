@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
 import '../theme/app_theme.dart';
 import '../services/api_service.dart';
 
@@ -58,6 +60,9 @@ class _LoginScreenState extends State<LoginScreen>
 
       if (!mounted) return;
 
+      // Save user session in AuthProvider
+      context.read<AuthProvider>().loginFromJson(response);
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Bienvenue, ${response['nom']} !'),
@@ -67,12 +72,8 @@ class _LoginScreenState extends State<LoginScreen>
         ),
       );
 
-      // Navigate to Menu screen with user name
-      Navigator.pushReplacementNamed(
-        context,
-        '/menu',
-        arguments: response['nom'] ?? 'User',
-      );
+      // Navigate to main shell (Menu + tabs)
+      Navigator.pushReplacementNamed(context, '/menu');
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

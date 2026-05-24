@@ -1,12 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'src/providers/auth_provider.dart';
+import 'src/providers/cart_provider.dart';
+import 'src/providers/orders_provider.dart';
 import 'src/theme/app_theme.dart';
 import 'src/screens/splash_screen.dart';
 import 'src/screens/register_screen.dart';
 import 'src/screens/login_screen.dart';
-import 'src/screens/menu_screen.dart';
+import 'src/screens/main_shell_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => OrdersProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -28,9 +41,9 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(
                 builder: (_) => const LoginScreen());
           case '/menu':
-            final userName = settings.arguments as String? ?? 'User';
+          // We now route to MainShellScreen instead of MenuScreen directly
             return MaterialPageRoute(
-                builder: (_) => MenuScreen(userName: userName));
+                builder: (_) => const MainShellScreen());
           default:
             return MaterialPageRoute(
                 builder: (_) => const SplashScreen());

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../models/menu_item.dart' as models;
+import '../providers/cart_provider.dart';
 import '../theme/app_theme.dart';
 import '../services/api_service.dart';
 import '../widgets/item_detail_sheet.dart';
@@ -18,7 +21,7 @@ class MenuScreen extends StatefulWidget {
 class _MenuScreenState extends State<MenuScreen> {
   List<Map<String, dynamic>> _allItems = [];
   List<Map<String, dynamic>> _filteredItems = [];
-  List<Map<String, dynamic>> _cartItems = [];
+  // Cart is now managed globally by CartProvider
   bool _isLoading = true;
   String _selectedCategory = 'All';
   final _searchController = TextEditingController();
@@ -106,11 +109,8 @@ class _MenuScreenState extends State<MenuScreen> {
   }
 
   void _addToCart(Map<String, dynamic> item, [int quantity = 1]) {
-    setState(() {
-      for (int i = 0; i < quantity; i++) {
-        _cartItems.add(item);
-      }
-    });
+    final menuItem = models.MenuItem.fromJson(item);
+    context.read<CartProvider>().addItem(menuItem, quantity);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('${item['nom']} x$quantity ajouté au panier'),
@@ -176,9 +176,6 @@ class _MenuScreenState extends State<MenuScreen> {
           ],
         ),
       ),
-
-      // ─── Bottom Navigation ───
-      bottomNavigationBar: _buildBottomNav(),
     );
   }
 
@@ -434,89 +431,6 @@ class _MenuScreenState extends State<MenuScreen> {
         ],
       ),
     ),
-    );
-  }
-
-  /// Bottom navigation bar.
-  Widget _buildBottomNav() {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
-      child: BottomNavigationBar(
-        currentIndex: 0,
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: AppTheme.surface,
-        selectedItemColor: AppTheme.primary,
-        unselectedItemColor: AppTheme.textMuted,
-        selectedFontSize: 12,
-        unselectedFontSize: 12,
-        elevation: 0,
-        items: [
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.restaurant_menu),
-            label: 'Menu',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long_outlined),
-            label: 'Orders',
-          ),
-          BottomNavigationBarItem(
-            icon: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                const Icon(Icons.shopping_cart_outlined),
-                if (_cartItems.isNotEmpty)
-                  Positioned(
-                    right: -6,
-                    top: -4,
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: const BoxDecoration(
-                        color: AppTheme.primary,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Text(
-                        '${_cartItems.length}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-            label: 'Cart',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            label: 'Profile',
-          ),
-        ],
-        onTap: (index) {
-          if (index == 0) return; // Already on Menu
-          final screenNames = ['', 'Orders', 'Cart', 'Profile'];
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('${screenNames[index]} - Coming Soon! 🚧'),
-              backgroundColor: AppTheme.textDark,
-              behavior: SnackBarBehavior.floating,
-              duration: const Duration(seconds: 1),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
-            ),
-          );
-        },
-      ),
     );
   }
 }

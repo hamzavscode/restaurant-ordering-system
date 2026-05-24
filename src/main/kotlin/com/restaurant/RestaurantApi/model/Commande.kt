@@ -34,11 +34,9 @@ class Commande(
     @JoinColumn(name = "client_id")
     @JsonIgnore
     var client: Client,
+
     /**
-     * La liste des [ElementMenu] (articles) inclus dans cette commande.
-     *
-     * Il s'agit d'une relation `ManyToMany` (une commande peut avoir plusieurs
-     * articles, et un article peut être dans plusieurs commandes).
+     * La liste des [ElementMenu] distincts inclus dans cette commande.
      * La relation est gérée par une table de jonction nommée `commande_menu`.
      */
     @ManyToMany
@@ -47,5 +45,13 @@ class Commande(
         joinColumns = [JoinColumn(name = "commande_id")],
         inverseJoinColumns = [JoinColumn(name = "menu_id")]
     )
-    val elements: MutableList<ElementMenu> = mutableListOf()
+    val elements: MutableList<ElementMenu> = mutableListOf(),
+
+    /**
+     * JSON string stockant les quantités de chaque élément.
+     * Format: {"elementId": quantity, ...} ex: {"4":3,"7":1}
+     * Permet de supporter les quantités multiples malgré @ManyToMany.
+     */
+    @Column(columnDefinition = "TEXT")
+    var quantitiesJson: String? = null
 )
