@@ -1,18 +1,26 @@
-# 🍽️ Restaurant API - Projet Backend Kotlin / Spring Boot
+# 🍽️ Modern Hospitality - API Spring Boot & App Flutter
 
 ## 📝 Description
-Cette application est une **API REST** développée en **Kotlin** avec **Spring Boot** pour gérer les éléments d’un restaurant :
-les plats, les boissons, les desserts, les commandes et les clients.  
-Elle permet d’ajouter, modifier, supprimer et consulter les informations via des endpoints REST.
+**Modern Hospitality** est un système complet de gestion de commandes pour restaurant, divisé en deux parties :
+- **Un Backend (API REST)** développé en **Kotlin** avec **Spring Boot** pour gérer le catalogue, les clients et les commandes.
+- **Un Frontend (Application Mobile)** développé avec **Flutter** offrant aux clients une interface moderne pour consulter le menu, gérer le panier et suivre les commandes (avec support du mode hors-ligne).
 
 ---
 
 ## 🛠️ Technologies Utilisées
+
+### ⚙️ Backend (API)
 - **Langage :** Kotlin
 - **Framework :** Spring Boot 3
 - **Base de données :** MySQL
 - **Build Tool :** Gradle
 - **ORM :** Spring Data JPA / Hibernate
+
+### 📱 Frontend (Application Mobile)
+- **Framework :** Flutter (Dart)
+- **Gestion d'état :** Provider
+- **Stockage local :** SQLite (sqflite) & SharedPreferences
+- **Réseau :** http & connectivity_plus
 
 ---
 
@@ -37,22 +45,23 @@ Elle permet d’ajouter, modifier, supprimer et consulter les informations via d
 - JDK 17+
 - MySQL installé
 - Gradle
+- SDK Flutter installé
 
 ---
 
-### 🪜 Étapes d'installation
+### 🪜 1. Lancer le Backend (Spring Boot)
 
-#### 1️⃣ Cloner le repository
+#### Cloner le repository
 ```bash
 git clone https://github.com/hamzavscode/restaurant-ordering-system.git
 ```
 
-#### 2️⃣ Créer la base de données
+#### Créer la base de données
 ```sql
 CREATE DATABASE restaurant_db;
 ```
 
-#### 3️⃣ Configurer application.properties
+#### Configurer application.properties
 Modifiez le fichier `src/main/resources/application.properties` si nécessaire :
 ```properties
 spring.application.name=RestaurantApi
@@ -65,14 +74,28 @@ spring.jpa.database-platform=org.hibernate.dialect.MySQL8Dialect
 spring.jpa.show-sql=true
 ```
 
-#### 4️⃣ Lancer l’application
+#### Démarrer l'API
 ```bash
 ./gradlew bootRun
 ```
+*Le backend sera accessible sur `http://localhost:8080`*
 
 ---
 
-## 📡 Endpoints Disponibles
+### 📱 2. Lancer le Frontend (Flutter)
+
+Ouvrez un nouveau terminal et accédez au dossier `frontend` :
+
+```bash
+cd frontend
+flutter pub get
+flutter run
+```
+*(Vous pouvez lancer l'application sur un émulateur Android, iOS ou sur le Web).*
+
+---
+
+## 📡 Endpoints Disponibles (API)
 
 ### 👤 Client
 - `GET /api/clients` → Récupérer tous les clients
@@ -113,11 +136,12 @@ spring.jpa.show-sql=true
 ---
 
 ## ✨ Améliorations Techniques Intégrées
-- Validation des données avec `@Valid`, `@NotNull`, `@NotBlank`, etc.
-- Gestion centralisée des exceptions (`@ControllerAdvice`).
-- Utilisation des DTOs pour séparer la couche de présentation.
-- Architecture multi-couches (Controller → Service → Repository).
-- Application mobile compagnon (Flutter) avec support hors-ligne (SQLite).
+- **Architecture complète :** Backend Kotlin / Spring Boot couplé à une Application Mobile Flutter.
+- **Support Hors-Ligne (Mobile) :** Mise en cache SQLite du menu et des commandes passées.
+- **Gestion d'état (Flutter) :** Utilisation de `Provider` pour le panier et l'authentification.
+- **Validation Backend :** Validation des données avec `@Valid`, `@NotNull`, `@NotBlank`.
+- **Héritage JPA :** Utilisation de `Single Table Inheritance` pour unifier les entités du menu.
+- **Gestion centralisée des exceptions :** via `@ControllerAdvice`.
 
 ---
 
