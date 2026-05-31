@@ -10,6 +10,7 @@ import 'src/screens/login_screen.dart';
 import 'src/screens/main_shell_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(
     MultiProvider(
       providers: [

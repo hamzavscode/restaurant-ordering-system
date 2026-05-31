@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import '../models/user.dart';
+import '../services/pref_service.dart';
 
 /// Manages the authentication state of the app.
 /// Stores the currently logged-in user and provides login/logout methods.
 class AuthProvider extends ChangeNotifier {
   User? _currentUser;
+  bool _isLoadingSession = true;
+
+  bool get isLoadingSession => _isLoadingSession;
 
   /// The currently logged-in user, or null if not logged in.
   User? get currentUser => _currentUser;
@@ -21,15 +25,28 @@ class AuthProvider extends ChangeNotifier {
   /// The user's ID.
   int get userId => _currentUser?.id ?? 0;
 
+  /// Loads the session from SharedPreferences on app start.
+  Future<void> loadSession() async {
+    _isLoadingSession = true;
+    notifyListeners();
+
+    _currentUser = await PrefService.loadUser();
+
+    _isLoadingSession = false;
+    notifyListeners();
+  }
+
   /// Sets the current user after a successful login.
   void login(User user) {
     _currentUser = user;
+    PrefService.saveUser(user);
     notifyListeners();
   }
 
   /// Sets the current user from a JSON response (login/register API).
   void loginFromJson(Map<String, dynamic> json) {
     _currentUser = User.fromJson(json);
+    PrefService.saveUser(_currentUser!);
     notifyListeners();
   }
 
@@ -48,6 +65,7 @@ class AuthProvider extends ChangeNotifier {
   /// Logs out the current user and clears the session.
   void logout() {
     _currentUser = null;
+    PrefService.clearUser();
     notifyListeners();
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import '../providers/auth_provider.dart';
 import '../providers/cart_provider.dart';
 import '../providers/orders_provider.dart';
@@ -25,6 +26,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final ordersProvider = context.read<OrdersProvider>();
 
     if (cart.isEmpty) return;
+
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('You are offline. Cannot place an order right now.'),
+          backgroundColor: Colors.red.shade600,
+        ),
+      );
+      return;
+    }
 
     setState(() => _isProcessing = true);
 

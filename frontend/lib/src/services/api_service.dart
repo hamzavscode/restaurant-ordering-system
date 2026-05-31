@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'local_db_service.dart';
 
 /// Service class that handles all HTTP communication with the Spring Boot backend.
 /// Centralizes API calls so screens only need to call simple methods.
@@ -71,19 +73,42 @@ class ApiService {
 
   /// Fetch all menu items from the backend.
   /// Calls GET /api/elements and returns a list of menu items.
+  /// FALLBACK: If offline, returns cached menu from SQLite.
   static Future<List<Map<String, dynamic>>> getMenu() async {
-    final url = Uri.parse('$baseUrl/elements');
+    final connectivityResult = await Connectivity().checkConnectivity();
+    final isOffline = connectivityResult == ConnectivityResult.none;
 
-    final response = await http.get(
-      url,
-      headers: {'Content-Type': 'application/json'},
-    );
+    if (isOffline) {
+      // Offline: Return cached menu
+      final cached = await LocalDbService.getCachedMenu();
+      if (cached.isNotEmpty) return cached;
+      throw Exception('Hors ligne : Aucun menu en cache disponible.');
+    }
 
-    if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body);
-      return data.cast<Map<String, dynamic>>();
-    } else {
-      throw Exception('Erreur lors du chargement du menu');
+    // Online: Fetch from API
+    try {
+      final url = Uri.parse('$baseUrl/elements');
+      final response = await http.get(
+        url,
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        final menuList = data.map((e) => e as Map<String, dynamic>).toList();
+        
+        // Cache the newly fetched menu
+        await LocalDbService.cacheMenu(menuList);
+        
+        return menuList;
+      } else {
+        throw Exception('Erreur lors du chargement du menu');
+      }
+    } catch (e) {
+      // Fallback on timeout/error
+      final cached = await LocalDbService.getCachedMenu();
+      if (cached.isNotEmpty) return cached;
+      throw Exception('Erreur API/Cache: $e');
     }
   }
 
@@ -120,20 +145,44 @@ class ApiService {
 
   /// Fetch all orders for a specific client.
   /// Calls GET /api/commandes and filters by client ID.
+  /// FALLBACK: If offline, returns cached orders from SQLite.
   static Future<List<Map<String, dynamic>>> getOrdersByClient(
       int clientId) async {
-    final url = Uri.parse('$baseUrl/commandes');
+    final connectivityResult = await Connectivity().checkConnectivity();
+    final isOffline = connectivityResult == ConnectivityResult.none;
 
-    final response = await http.get(
-      url,
-      headers: {'Content-Type': 'application/json'},
-    );
+    if (isOffline) {
+      // Offline: Return cached orders
+      final cached = await LocalDbService.getCachedOrders(clientId);
+      if (cached.isNotEmpty) return cached;
+      throw Exception('Hors ligne : Aucune commande en cache disponible.');
+    }
 
-    if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body);
-      return data.cast<Map<String, dynamic>>();
-    } else {
-      throw Exception('Erreur lors du chargement des commandes');
+    try {
+      final url = Uri.parse('$baseUrl/commandes');
+      final response = await http.get(
+        url,
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        final filteredOrders = data
+            .map((e) => e as Map<String, dynamic>)
+            .where((o) => o['client'] != null && o['client']['id'] == clientId)
+            .toList();
+
+        // Cache the fetched orders
+        await LocalDbService.cacheOrders(clientId, filteredOrders);
+
+        return filteredOrders;
+      } else {
+        throw Exception('Erreur lors du chargement des commandes');
+      }
+    } catch (e) {
+      final cached = await LocalDbService.getCachedOrders(clientId);
+      if (cached.isNotEmpty) return cached;
+      throw Exception('Erreur Commandes/Cache: $e');
     }
   }
 
