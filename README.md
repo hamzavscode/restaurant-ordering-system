@@ -44,109 +44,90 @@ Elle permet d’ajouter, modifier, supprimer et consulter les informations via d
 
 #### 1️⃣ Cloner le repository
 ```bash
-git clone https://github.com/aliben04/RestaurantApi.git
-
+git clone https://github.com/hamzavscode/restaurant-ordering-system.git
 ```
-2️⃣ Créer la base de données
 
+#### 2️⃣ Créer la base de données
+```sql
 CREATE DATABASE restaurant_db;
+```
 
-3️⃣ Configurer application.properties
-
+#### 3️⃣ Configurer application.properties
+Modifiez le fichier `src/main/resources/application.properties` si nécessaire :
+```properties
 spring.application.name=RestaurantApi
-
 spring.datasource.url=jdbc:mysql://localhost:3306/restaurant_db
-
 spring.datasource.username=root
-
 spring.datasource.password=
-
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-
 spring.jpa.hibernate.ddl-auto=update
-
 spring.jpa.database-platform=org.hibernate.dialect.MySQL8Dialect
-
 spring.jpa.show-sql=true
+```
 
-4️⃣ Lancer l’application
-
+#### 4️⃣ Lancer l’application
+```bash
 ./gradlew bootRun
+```
 
-📡 Endpoints Disponibles
--Client:
+---
 
-GET /api/clients → Récupérer tous les clients
+## 📡 Endpoints Disponibles
 
-GET /api/clients/{id} → Récupérer un client par ID
+### 👤 Client
+- `GET /api/clients` → Récupérer tous les clients
+- `GET /api/clients/{id}` → Récupérer un client par ID
+- `POST /api/clients/register` → Créer un nouveau client
+- `POST /api/clients/login` → Authentifier un client
+- `PUT /api/clients/{id}` → Mettre à jour un client
+- `DELETE /api/clients/{id}` → Supprimer un client
 
-POST /api/clients → Créer un nouveau client
+### 🍔 Plat Principal
+- `GET /api/plats` → Récupérer tous les plats
+- `GET /api/plats/{id}` → Récupérer un plat par ID
+- `POST /api/plats` → Créer un plat
+- `PUT /api/plats/{id}` → Mettre à jour un plat
+- `DELETE /api/plats/{id}` → Supprimer un plat
 
-PUT /api/clients/{id} → Mettre à jour un client
+### 🍰 Dessert
+- `GET /api/desserts` → Récupérer tous les desserts
+- `GET /api/desserts/{id}` → Récupérer un dessert par ID
+- `POST /api/desserts` → Créer un dessert
+- `PUT /api/desserts/{id}` → Mettre à jour un dessert
+- `DELETE /api/desserts/{id}` → Supprimer un dessert
 
-DELETE /api/clients/{id} → Supprimer un client
+### 🥤 Boisson
+- `GET /api/boissons` → Récupérer toutes les boissons
+- `GET /api/boissons/{id}` → Récupérer une boisson par ID
+- `POST /api/boissons` → Créer une boisson
+- `PUT /api/boissons/{id}` → Mettre à jour une boisson
+- `DELETE /api/boissons/{id}` → Supprimer une boisson
 
--Plat Principal:
+### 📦 Commande
+- `GET /api/commandes` → Récupérer toutes les commandes
+- `GET /api/commandes/{id}` → Récupérer une commande par ID
+- `POST /api/commandes` → Créer une commande
+- `PUT /api/commandes/{id}` → Mettre à jour une commande (ex: annuler)
+- `DELETE /api/commandes/{id}` → Supprimer une commande
 
-GET /api/plats
+---
 
-GET /api/plats/{id}
+## ✨ Améliorations Techniques Intégrées
+- Validation des données avec `@Valid`, `@NotNull`, `@NotBlank`, etc.
+- Gestion centralisée des exceptions (`@ControllerAdvice`).
+- Utilisation des DTOs pour séparer la couche de présentation.
+- Architecture multi-couches (Controller → Service → Repository).
+- Application mobile compagnon (Flutter) avec support hors-ligne (SQLite).
 
-POST /api/plats
+---
 
-PUT /api/plats/{id}
-
-DELETE /api/plats/{id}
-
-Dessert : 
-
-GET /api/desserts
-
-GET /api/desserts/{id}
-
-POST /api/desserts
-
-PUT /api/desserts/{id}
-
-DELETE /api/desserts/{id}
-
-Boisson:
-
-GET /api/boissons
-
-GET /api/boissons/{id}
-
-POST /api/boissons
-
-PUT /api/boissons/{id}
-
-DELETE /api/boissons/{id}
-
-Commande:
-GET /api/commandes
-
-GET /api/commandes/{id}
-
-POST /api/commandes
-
-PUT /api/commandes/{id}
-
-DELETE /api/commandes/{id}
-
-✨ Améliorations Techniques Intégrées
-
-- Validation des données avec @Valid, @NotNull, @NotBlank, etc.
-
-- Gestion centralisée des exceptions (@ControllerAdvice).
-
-- Utilisation des DTOs pour séparer la couche de présentation. 
-- 
 ## 📚 Documentation du code (Dokka)
 La documentation générée par **Dokka** se trouve dans le dossier :
-- build/dokka/html/index.html
+- `build/dokka/html/index.html`
 
-👥 Auteurs:
+---
 
+## 👥 Auteurs
 - Ali Benettoumi & Hamza Joual
 
-##Date : 31/10/2025
+**Date :** 31 Mai 2026
